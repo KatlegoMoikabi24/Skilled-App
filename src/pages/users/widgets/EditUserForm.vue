@@ -26,7 +26,7 @@ const defaultNewUser: User = {
   notes: '',
   email: '',
   active: true,
-  projects: [],
+  industry: [],
 }
 
 const newUser = ref<User>({ ...defaultNewUser })
@@ -87,6 +87,34 @@ const roleSelectOptions: { text: Capitalize<UserRole>; value: UserRole }[] = [
 ]
 
 const { projects } = useProjects({ pagination: ref({ page: 1, perPage: 9999, total: 10 }) })
+
+const industries = ref([
+  { id: 1, fullname: 'Agriculture' },
+  { id: 2, fullname: 'Mining and Minerals' },
+  { id: 3, fullname: 'Manufacturing' },
+  { id: 4, fullname: 'Construction' },
+  { id: 5, fullname: 'Wholesale and Retail Trade' },
+  { id: 6, fullname: 'Transport and Logistics' },
+  { id: 7, fullname: 'Financial Services' },
+  { id: 8, fullname: 'Tourism and Hospitality' },
+  { id: 9, fullname: 'Information Technology' },
+  { id: 10, fullname: 'Telecommunications' },
+  { id: 11, fullname: 'Energy and Utilities' },
+  { id: 12, fullname: 'Healthcare and Pharmaceuticals' },
+  { id: 13, fullname: 'Real Estate and Property Management' },
+  { id: 14, fullname: 'Professional Services' },
+  { id: 15, fullname: 'Media and Advertising' },
+  { id: 16, fullname: 'Education and Training' },
+  { id: 17, fullname: 'Government and Public Sector' },
+  { id: 18, fullname: 'Environmental Services' },
+  { id: 19, fullname: 'Retail Banking' },
+  { id: 20, fullname: 'Automotive' },
+  { id: 21, fullname: 'Food and Beverage' },
+  { id: 22, fullname: 'Textiles and Apparel' },
+  { id: 23, fullname: 'Construction Materials' },
+  { id: 24, fullname: 'Biotechnology' },
+  { id: 25, fullname: 'E-commerce' },
+]);
 </script>
 
 <template>
@@ -147,7 +175,18 @@ const { projects } = useProjects({ pagination: ref({ page: 1, perPage: 9999, tot
           :max-visible-options="2"
         />
       </div>
-
+      <VaSelect
+          v-model="newUser.industry"
+          label="Industry"
+          class="w-full sm:w-1/2"
+          :options="industries"
+          :rules="[validators.required]"
+          name="projects"
+          text-by="fullname"
+          track-by="id"
+          multiple
+          :max-visible-options="2"
+        />
       <div class="flex gap-4 w-full">
         <div class="w-1/2">
           <VaSelect
@@ -166,7 +205,7 @@ const { projects } = useProjects({ pagination: ref({ page: 1, perPage: 9999, tot
         </div>
       </div>
 
-      <VaTextarea v-model="newUser.notes" label="Notes" class="w-full" name="notes" />
+      <VaTextarea v-model="newUser.notes" label="Skills/Description" class="w-full" name="notes" />
       <div class="flex gap-2 flex-col-reverse items-stretch justify-end w-full sm:flex-row sm:items-center">
         <VaButton preset="secondary" color="secondary" @click="$emit('close')">Cancel</VaButton>
         <VaButton :disabled="!isValid" @click="onSave">{{ saveButtonLabel }}</VaButton>
