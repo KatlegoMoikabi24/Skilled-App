@@ -24,9 +24,9 @@
           <div>
             <div class="flex items-center">
               <span class="inline-block w-2 h-2 mr-2 -ml-4" :style="{ backgroundColor: expensesColor }"></span>
-              <span class="text-secondary">Expense this month</span>
+              <span class="text-secondary">Onboarded Projects</span>
             </div>
-            <div class="mt-2 text-xl font-semibold">{{ formatMoney(earningsForSelectedMonth.expenses) }}</div>
+            <div class="mt-2 text-xl font-semibold">{{ (earningsForSelectedMonth.expenses) }}</div>
           </div>
         </div>
       </section>
