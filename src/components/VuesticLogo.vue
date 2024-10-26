@@ -1,6 +1,5 @@
 <template>
-
-  <va-image src="/logo.png" alt="Logo" />
+  <va-image src="./public/logo.png" alt="Logo" />
 </template>
 
 <script lang="ts" setup>
