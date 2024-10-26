@@ -1,14 +1,14 @@
 <template>
   <VaCard>
     <VaCardTitle>
-      <h1 class="card-title text-tag text-secondary font-bold uppercase">Monthly Earnings</h1>
+      <h1 class="card-title text-tag text-secondary font-bold uppercase">Monthly Enrollments</h1>
     </VaCardTitle>
     <VaCardContent>
       <div class="p-1 bg-black rounded absolute right-4 top-4">
-        <VaIcon name="mso-attach_money" color="#fff" size="large" />
+<!--        <VaIcon name="" color="#fff" size="large" />-->
       </div>
       <section>
-        <div class="text-xl font-bold mb-2">R 6,820</div>
+        <div class="text-xl font-bold mb-2">6,820</div>
         <p class="text-xs text-success">
           <VaIcon name="arrow_upward" />
           25.36%

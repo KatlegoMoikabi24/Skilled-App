@@ -37,18 +37,8 @@ const { getColor } = useColors()
 
 const dashboardMetrics = computed<DashboardMetric[]>(() => [
   {
-    id: 'openInvoices',
-    title: 'Open invoices',
-    value: '$35,548',
-    icon: 'mso-attach_money',
-    changeText: '$1, 450',
-    changeDirection: 'down',
-    iconBackground: getColor('success'),
-    iconColor: getColor('on-success'),
-  },
-  {
     id: 'ongoingProjects',
-    title: 'Ongoing project',
+    title: 'Skill-led Projects',
     value: '15',
     icon: 'mso-folder_open',
     changeText: '25.36%',
@@ -57,8 +47,18 @@ const dashboardMetrics = computed<DashboardMetric[]>(() => [
     iconColor: getColor('on-info'),
   },
   {
-    id: 'employees',
-    title: 'Employees',
+    id: 'openInvoices',
+    title: 'Students',
+    value: '3548',
+    icon: 'mso-account_circle',
+    changeText: '25.36%',
+    changeDirection: 'down',
+    iconBackground: getColor('success'),
+    iconColor: getColor('on-success'),
+  },
+  {
+    id: 'recruiters',
+    title: 'Recruiters',
     value: '25',
     icon: 'mso-account_circle',
     changeText: '2.5%',
@@ -67,14 +67,14 @@ const dashboardMetrics = computed<DashboardMetric[]>(() => [
     iconColor: getColor('on-danger'),
   },
   {
-    id: 'newProfit',
-    title: 'New profit',
-    value: '27%',
-    icon: 'mso-grade',
-    changeText: '4%',
+    id: 'mentors',
+    title: 'Mentors',
+    value: '158',
+    icon: 'mso-account_circle',
+    changeText: '2.5%',
     changeDirection: 'up',
-    iconBackground: getColor('warning'),
-    iconColor: getColor('on-warning'),
+    iconBackground: getColor('danger'),
+    iconColor: getColor('on-danger'),
   },
 ])
 </script>
