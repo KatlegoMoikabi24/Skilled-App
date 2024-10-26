@@ -18,7 +18,7 @@
         ]"
         :items="data"
       >
-        <template #cell(revenue)="{ rowData }"> ${{ rowData[`revenue${selectedPeriod}`] }} </template>
+        <template #cell(revenue)="{ rowData }"> R {{ rowData[`revenue${selectedPeriod}`] }} </template>
       </VaDataTable>
     </VaCardContent>
   </VaCard>
