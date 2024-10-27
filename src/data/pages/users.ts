@@ -3,6 +3,8 @@ import { User } from './../../pages/users/types'
 import usersDb from './users-db.json'
 import projectsDb from './projects-db.json'
 import { Project } from '../../pages/projects/types'
+import { db } from '../../firebase';
+import { collection, query, where, getDocs, limit } from 'firebase/firestore';
 
 export const users = usersDb as User[]
 
@@ -16,8 +18,6 @@ const getUserProjects = (userId: number | string) => {
       status: project.status as Project['status'],
     }))
 }
-
-// Simulate API calls
 
 export type Pagination = {
   page: number
@@ -44,44 +44,31 @@ const getSortItem = (obj: any, sortBy: string) => {
 }
 
 export const getUsers = async (filters: Partial<Filters & Pagination & Sorting>) => {
-  await sleep(1000)
-  const { isActive, search, sortBy, sortingOrder } = filters
-  let filteredUsers = users
+  await sleep(1000);
 
-  filteredUsers = filteredUsers.filter((user) => user.active === isActive)
+  const userCollection = collection(db, 'Users');
 
-  if (search) {
-    filteredUsers = filteredUsers.filter((user) => user.fullname.toLowerCase().includes(search.toLowerCase()))
-  }
+  const querySnapshot = await getDocs(userCollection);
 
-  filteredUsers = filteredUsers.map((user) => ({ ...user, projects: getUserProjects(user.id) }))
+  const filteredUsers = querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    createdAt: doc.data().createdAt.toDate(),
+    email: doc.data().email,
+    isActive: doc.data().isActive,
+    name: doc.data().name,
+    role: doc.data().role,
+    projects: [],
+  }));
 
-  if (sortBy && sortingOrder) {
-    filteredUsers = filteredUsers.sort((a, b) => {
-      const first = getSortItem(a, sortBy)
-      const second = getSortItem(b, sortBy)
-      if (first > second) {
-        return sortingOrder === 'asc' ? 1 : -1
-      }
-      if (first < second) {
-        return sortingOrder === 'asc' ? -1 : 1
-      }
-      return 0
-    })
-  }
-
-  const { page = 1, perPage = 10 } = filters || {}
   return {
-    data: filteredUsers.slice((page - 1) * perPage, page * perPage),
+    data: filteredUsers,
     pagination: {
-      page,
-      perPage,
+      page: 1,
+      perPage: filteredUsers.length,
       total: filteredUsers.length,
     },
-  }
-}
-
-export const addUser = async (user: User) => {
+  };
+};export const addUser = async (user: User) => {
   await sleep(1000)
   users.unshift(user)
 }
