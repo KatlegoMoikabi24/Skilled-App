@@ -46,7 +46,7 @@ const avatarColor = (userName: string) => {
           </h4>
           <p>
             <span class="text-[var(--va-secondary)]">Owner: </span>
-            <span>{{ project.project_owner.fullname }}</span>
+            <span>{{ }}</span>
           </p>
           <VaAvatarGroup
             class="my-4"
