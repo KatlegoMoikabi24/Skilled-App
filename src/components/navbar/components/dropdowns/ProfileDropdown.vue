@@ -7,7 +7,7 @@
             <slot />
             <VaAvatar class="mr-6">KM</VaAvatar>        
             </span>
-        </VaButton>25
+        </VaButton>
       </template>
       <VaDropdownContent
         class="profile-dropdown__content md:w-60 px-0 py-4 w-full"
