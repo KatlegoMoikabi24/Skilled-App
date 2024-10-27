@@ -41,26 +41,37 @@ const avatarColor = (userName: string) => {
       <VaCardContent class="flex flex-col h-full">
         <div class="text-[var(--va-secondary)]">Closing: {{ project.endDate }}</div>
         <div class="flex flex-col items-center gap-4 grow">
+
           <h4 style="color: #063970" class="va-h4 text-center self-stretch overflow-hidden line-clamp-2 text-ellipsis">
             {{ project.project_name }}
           </h4>
+
           <h2 class="va-h6" style="color: #34495e"> Industry: {{ project.industry.value }} </h2>
 
-<!--          <ProjectStatusBadge :status="project.status" />-->
-        </div>
+        <!-- <ProjectStatusBadge :status="project.status" />-->
 
-        <hr>
+        </div><hr>
+
         <div>
           <p><b>Prize:</b> R {{ project.prize }} </p>
-          <p>Project Owner: </p>
-          <p>No of Participants: </p>
-          <p>Participants: </p>
-
+          <p><b>Project Owner:</b> {{ project.project_owner }}</p>
+          <p><b>Description:</b> {{ project.description }} </p>
+          <p><b>Files/Attachments:</b>
+            <VaIcon
+                icon="mso-file-pdf"
+                aria-label="PDF file icon"
+            />
+          </p>
         </div>
+
         <VaDivider class="my-6" />
-        <div class="flex justify-between">
+        <div class="flex ju">
+
+          <VaButton icon="" @click="createNewProject">Join Project</VaButton>
+
           <VaButton preset="secondary" icon="mso-edit" color="secondary" @click="$emit('edit', project)" />
           <VaButton preset="secondary" icon="mso-delete" color="danger" @click="$emit('delete', project)" />
+
         </div>
       </VaCardContent>
     </VaCard>

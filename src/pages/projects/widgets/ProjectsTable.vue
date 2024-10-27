@@ -38,7 +38,7 @@ const props = defineProps({
     type: Object as PropType<Pagination>,
     required: true,
   },
-})
+});
 
 const emit = defineEmits<{
   (event: 'edit', project: Project): void
