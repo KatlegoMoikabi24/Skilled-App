@@ -5,9 +5,9 @@
         <VaButton preset="secondary" color="textPrimary">
           <span class="profile-dropdown__anchor min-w-max">
             <slot />
-            <VaAvatar :size="32" color="warning"> 😍 </VaAvatar>
-          </span>
-        </VaButton>
+            <VaAvatar class="mr-6">KM</VaAvatar>        
+            </span>
+        </VaButton>25
       </template>
       <VaDropdownContent
         class="profile-dropdown__content md:w-60 px-0 py-4 w-full"
