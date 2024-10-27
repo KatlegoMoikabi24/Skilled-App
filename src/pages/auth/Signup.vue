@@ -1,4 +1,6 @@
 <template>
+
+
   <VaForm ref="form" @submit.prevent="submit">
     <h1 class="font-semibold text-4xl mb-4">Sign up</h1>
     <p class="text-base mb-4 leading-5">
@@ -91,6 +93,14 @@
       </div>
     </VaModal>
   </VaForm>
+
+
+  const roleSelectOptions: { text: Capitalize<UserRole>; value: UserRole }[] = [
+  { text: 'Admin', value: 'admin' },
+  { text: 'User', value: 'user' },
+  { text: 'Owner', value: 'owner' },
+]
+
 </template>
 
 <script lang="ts" setup>
@@ -145,6 +155,8 @@ const confirmRole = async () => {
     init({ message: error.message, color: 'danger' })
   }
 }
+
+
 
 const passwordRules: ((v: string) => boolean | string)[] = [
   (v) => !!v || 'Password field is required',
