@@ -12,7 +12,7 @@ const columns = defineVaDataTableColumns([
   { label: 'Participants', key: 'participants', sortable: true },
   { label: 'Prize', key: 'prize', sortable: true },
   { label: 'Start Date', key: 'creation_date', sortable: true },
-  { label: 'Closing Date', key: 'creation_date', sortable: true },
+  { label: 'Closing Date', key: 'endDate', sortable: true },
   { label: 'Status', key: 'status', sortable: true },
   { label: ' ', key: 'actions' },
 ])
@@ -76,20 +76,12 @@ const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagin
           {{  }}
         </div>
       </template>
-      <template #cell(team)="{ rowData: project }">
-        <VaAvatarGroup
-          size="small"
-          :options="
-            (project as Project).team.map((user) => ({
-              label: user.fullname,
-              src: user.avatar,
-              fallbackText: user.fullname[0],
-              color: avatarColor(user.fullname),
-            }))
-          "
-          :max="5"
-        />
+      <template #cell(prize)="{ rowData }">
+        <div class="flex items-center gap-2 ellipsis max-w-[230px]">
+         R {{ rowData.prize }}
+        </div>
       </template>
+
       <template #cell(status)="{ rowData: project }">
         <ProjectStatusBadge :status="project.status" />
       </template>

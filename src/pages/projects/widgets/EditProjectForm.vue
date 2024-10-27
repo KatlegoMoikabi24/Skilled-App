@@ -107,6 +107,15 @@ const industries = ref([
 
     <VaInput v-model="newProject.description" label="Description/Project Scope" :rules="[required]" />
 
+    <VaInput v-model="newProject.prize" label="Price" :rules="[required]" />
+
+    <VaDatePicker
+        v-model="newProject.endDate"
+        label="Select Date"
+        @close="updateText"
+        :rules="[required, { validator: value => value !== '', message: 'Date is required' }]"
+    />
+
     <VaSelect
       v-model="newProject.attachments"
       label="Attachments"

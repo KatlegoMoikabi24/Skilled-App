@@ -95,11 +95,11 @@
   </VaForm>
 
 
-  const roleSelectOptions: { text: Capitalize<UserRole>; value: UserRole }[] = [
-  { text: 'Admin', value: 'admin' },
-  { text: 'User', value: 'user' },
-  { text: 'Owner', value: 'owner' },
-]
+<!--  const roleSelectOptions: { text: Capitalize<UserRole>; value: UserRole }[] = [-->
+<!--      { text: 'Admin', value: 'admin' },-->
+<!--      { text: 'User', value: 'user' },-->
+<!--      { text: 'Owner', value: 'owner' },-->
+<!--  ]-->
 
 </template>
 
