@@ -45,26 +45,26 @@ const avatarColor = (userName: string) => {
               {{ rowData.project_name }}
             </div>
           </template>
-          <template #cell(project_owner)="{ rowData }">
-            <div class="flex items-center gap-2 ellipsis max-w-[230px]">
-              <UserAvatar :user="rowData.project_owner" size="small" />
-              {{ rowData.project_owner.fullname }}
-            </div>
-          </template>
-          <template #cell(team)="{ rowData: project }">
-            <VaAvatarGroup
-              size="small"
-              :options="
-                (project as Project).team.map((user) => ({
-                  label: user.fullname,
-                  src: user.avatar,
-                  fallbackText: user.fullname[0],
-                  color: avatarColor(user.fullname),
-                }))
-              "
-              :max="2"
-            />
-          </template>
+<!--          <template #cell(project_owner)="{ rowData }">-->
+<!--            <div class="flex items-center gap-2 ellipsis max-w-[230px]">-->
+<!--              <UserAvatar :user="rowData.project_owner" size="small" />-->
+<!--              {{ rowData.project_owner.fullname }}-->
+<!--            </div>-->
+<!--          </template>-->
+<!--          <template #cell(team)="{ rowData: project }">-->
+<!--            <VaAvatarGroup-->
+<!--              size="small"-->
+<!--              :options="-->
+<!--                (project as Project).team.map((user) => ({-->
+<!--                  label: user.fullname,-->
+<!--                  src: user.avatar,-->
+<!--                  fallbackText: user.fullname[0],-->
+<!--                  color: avatarColor(user.fullname),-->
+<!--                }))-->
+<!--              "-->
+<!--              :max="2"-->
+<!--            />-->
+<!--          </template>-->
           <template #cell(status)="{ rowData: project }">
             <ProjectStatusBadge :status="project.status" />
           </template>

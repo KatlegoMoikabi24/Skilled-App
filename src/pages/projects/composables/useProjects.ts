@@ -46,11 +46,10 @@ export const useProjects = (options?: { sorting?: Ref<Sorting>; pagination?: Ref
     fetch,
 
     async add(project: Omit<Project, 'id' | 'creation_date'>) {
-      isLoading.value = true
+      isLoading.value = true;
       await addProject({
         ...project,
-        project_owner: project.project_owner.id,
-        team: project.team.map((user) => user.id),
+         project_owner: localStorage.getItem('guid'),
       })
       await fetch()
       isLoading.value = false
@@ -60,8 +59,8 @@ export const useProjects = (options?: { sorting?: Ref<Sorting>; pagination?: Ref
       isLoading.value = true
       await updateProject({
         ...project,
-        project_owner: project.project_owner.id,
-        team: project.team.map((user) => user.id),
+        // project_owner: project.project_owner,
+        // team: project.team.map((user) => user.id),
       })
       await fetch()
       isLoading.value = false
@@ -71,8 +70,8 @@ export const useProjects = (options?: { sorting?: Ref<Sorting>; pagination?: Ref
       isLoading.value = true
       await removeProject({
         ...project,
-        project_owner: project.project_owner.id,
-        team: project.team.map((user) => user.id),
+        // project_owner: project.project_owner.id,
+        // team: project.team.map((user) => user.id),
       })
       await fetch()
       isLoading.value = false

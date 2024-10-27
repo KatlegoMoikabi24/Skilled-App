@@ -2,7 +2,6 @@
 import { PropType, computed } from 'vue'
 import { defineVaDataTableColumns } from 'vuestic-ui'
 import { Project } from '../types'
-import UserAvatar from '../../users/widgets/UserAvatar.vue'
 import ProjectStatusBadge from '../components/ProjectStatusBadge.vue'
 import { Pagination, Sorting } from '../../../data/pages/projects'
 import { useVModel } from '@vueuse/core'
@@ -10,9 +9,11 @@ import { useVModel } from '@vueuse/core'
 const columns = defineVaDataTableColumns([
   { label: 'Project name', key: 'project_name', sortable: true },
   { label: 'Project owner', key: 'project_owner', sortable: true },
-  { label: 'Team', key: 'team', sortable: true },
+  { label: 'Participants', key: 'participants', sortable: true },
+  { label: 'Prize', key: 'prize', sortable: true },
+  { label: 'Start Date', key: 'creation_date', sortable: true },
+  { label: 'Closing Date', key: 'creation_date', sortable: true },
   { label: 'Status', key: 'status', sortable: true },
-  { label: 'Creation Date', key: 'creation_date', sortable: true },
   { label: ' ', key: 'actions' },
 ])
 
@@ -72,8 +73,7 @@ const totalPages = computed(() => Math.ceil(props.pagination.total / props.pagin
       </template>
       <template #cell(project_owner)="{ rowData }">
         <div class="flex items-center gap-2 ellipsis max-w-[230px]">
-          <UserAvatar :user="rowData.project_owner" size="small" />
-          {{ rowData.project_owner.fullname }}
+          {{  }}
         </div>
       </template>
       <template #cell(team)="{ rowData: project }">
