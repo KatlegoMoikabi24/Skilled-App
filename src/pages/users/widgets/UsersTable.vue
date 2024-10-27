@@ -10,9 +10,10 @@ import { Project } from '../../projects/types'
 const columns = defineVaDataTableColumns([
   { label: 'Full Name', key: 'name', sortable: true },
   { label: 'Email', key: 'email', sortable: true },
-  { label: 'Username', key: 'username', sortable: true },
   { label: 'Role', key: 'role', sortable: true },
+  { label: 'Industry', key: 'industry', sortable: true },
   { label: 'Projects', key: 'projects', sortable: true },
+  { label: 'Date Joined', key: 'date', sortable: true },
   { label: ' ', key: 'actions', align: 'right' },
 ])
 
