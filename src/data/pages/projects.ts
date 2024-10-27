@@ -41,7 +41,8 @@ export const getProjects = async (options: Sorting & Pagination) => {
     const project = { id: doc.id, ...doc.data() };
     return {
       ...project,
-      project_owner: usersDb.find((user) => user.id === project.project_owner)! as (typeof usersDb)[number],
+      endDate: project.endDate ? project.endDate.toDate().toLocaleDateString('en-US',
+          { month: 'short', day: 'numeric', year: 'numeric' }) : null,
     };
   });
 
