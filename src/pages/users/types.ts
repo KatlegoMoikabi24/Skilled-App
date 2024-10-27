@@ -13,4 +13,14 @@ export type BaseUser = {
   active: boolean
 }
 
+export interface User {
+  id: string;
+  createdAt: Date;
+  email: string;
+  isActive: boolean;
+  name: string;
+  role: UserRole;
+  projects: Project[];
+}
+
 export type User = BaseUser & { projects: Project[] }

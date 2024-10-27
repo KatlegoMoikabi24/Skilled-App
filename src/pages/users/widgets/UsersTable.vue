@@ -8,7 +8,7 @@ import { useVModel } from '@vueuse/core'
 import { Project } from '../../projects/types'
 
 const columns = defineVaDataTableColumns([
-  { label: 'Full Name', key: 'fullname', sortable: true },
+  { label: 'Full Name', key: 'name', sortable: true },
   { label: 'Email', key: 'email', sortable: true },
   { label: 'Username', key: 'username', sortable: true },
   { label: 'Role', key: 'role', sortable: true },
@@ -64,21 +64,21 @@ const onUserDelete = async (user: User) => {
 }
 
 const formatProjectNames = (projects: Project[]) => {
-  if (projects.length === 0) return 'No projects'
+  if (projects.length === 0) return 'No projects';
   if (projects.length <= 2) {
-    return projects.map((project) => project.project_name).join(', ')
+    return projects.map((project) => project.project_name).join(', ');
   }
-
   return (
-    projects
-      .slice(0, 2)
-      .map((project) => project.project_name)
-      .join(', ') +
-    ' + ' +
-    (projects.length - 2) +
-    ' more'
-  )
+      projects
+          .slice(0, 2)
+          .map((project) => project.project_name)
+          .join(', ') +
+      ' + ' +
+      (projects.length - 2) +
+      ' more'
+  );
 }
+
 </script>
 
 <template>
@@ -92,7 +92,7 @@ const formatProjectNames = (projects: Project[]) => {
     <template #cell(fullname)="{ rowData }">
       <div class="flex items-center gap-2 max-w-[230px] ellipsis">
         <UserAvatar :user="rowData as User" size="small" />
-        {{ rowData.fullname }}
+        {{ rowData.name }}
       </div>
     </template>
 
