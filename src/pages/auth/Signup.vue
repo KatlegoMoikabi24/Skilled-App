@@ -5,49 +5,56 @@
       Have an account?
       <RouterLink :to="{ name: 'login' }" class="font-semibold text-primary">Login</RouterLink>
     </p>
+
     <VaInput
-      v-model="formData.email"
-      :rules="[(v) => !!v || 'Email field is required', (v) => /.+@.+\..+/.test(v) || 'Email should be valid']"
-      class="mb-4"
-      label="Email"
-      type="email"
+        v-model="formData.name"
+        :rules="[(v) => !!v || 'Name field is required']"
+        class="mb-4"
+        label="Name"
     />
+
+    <VaInput
+        v-model="formData.email"
+        :rules="[(v) => !!v || 'Email field is required', (v) => /.+@.+\..+/.test(v) || 'Email should be valid']"
+        class="mb-4"
+        label="Email"
+        type="email"
+    />
+
     <VaValue v-slot="isPasswordVisible" :default-value="false">
       <VaInput
-        ref="password1"
-        v-model="formData.password"
-        :rules="passwordRules"
-        :type="isPasswordVisible.value ? 'text' : 'password'"
-        class="mb-4"
-        label="Password"
-        messages="Password should be 8+ characters: letters, numbers, and special characters."
-        @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
+          v-model="formData.password"
+          :rules="passwordRules"
+          :type="isPasswordVisible.value ? 'text' : 'password'"
+          class="mb-4"
+          label="Password"
+          messages="Password should be 8+ characters: letters, numbers, and special characters."
+          @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
       >
         <template #appendInner>
           <VaIcon
-            :name="isPasswordVisible.value ? 'mso-visibility_off' : 'mso-visibility'"
-            class="cursor-pointer"
-            color="secondary"
+              :name="isPasswordVisible.value ? 'mso-visibility_off' : 'mso-visibility'"
+              class="cursor-pointer"
+              color="secondary"
           />
         </template>
       </VaInput>
       <VaInput
-        ref="password2"
-        v-model="formData.repeatPassword"
-        :rules="[
+          v-model="formData.repeatPassword"
+          :rules="[
           (v) => !!v || 'Repeat Password field is required',
           (v) => v === formData.password || 'Passwords don\'t match',
         ]"
-        :type="isPasswordVisible.value ? 'text' : 'password'"
-        class="mb-4"
-        label="Repeat Password"
-        @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
+          :type="isPasswordVisible.value ? 'text' : 'password'"
+          class="mb-4"
+          label="Repeat Password"
+          @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
       >
         <template #appendInner>
           <VaIcon
-            :name="isPasswordVisible.value ? 'mso-visibility_off' : 'mso-visibility'"
-            class="cursor-pointer"
-            color="secondary"
+              :name="isPasswordVisible.value ? 'mso-visibility_off' : 'mso-visibility'"
+              class="cursor-pointer"
+              color="secondary"
           />
         </template>
       </VaInput>
@@ -63,24 +70,44 @@
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
+import { auth } from '../../firebase' // Adjust the path as necessary
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { getFirestore, doc, setDoc } from 'firebase/firestore'
 
 const { validate } = useForm('form')
 const { push } = useRouter()
 const { init } = useToast()
 
 const formData = reactive({
+  name: '', // Added field for user name
   email: '',
   password: '',
   repeatPassword: '',
 })
 
-const submit = () => {
+const submit = async () => {
   if (validate()) {
-    init({
-      message: "You've successfully signed up",
-      color: 'success',
-    })
-    push({ name: 'dashboard' })
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
+      const user = userCredential.user
+      const db = getFirestore()
+
+      // Create a document for the user with their UID
+      const userDocRef = doc(db, 'Users', user.uid) // Ensure 'Users' matches your collection name
+      await setDoc(userDocRef, {
+        name: formData.name, // Storing additional user data
+        email: formData.email,
+        createdAt: new Date(),
+      })
+
+
+      localStorage.setItem('guid', user.uid)
+
+      init({ message: "You've successfully signed up", color: 'success' })
+      push({ name: 'dashboard' })
+    } catch (error) {
+      init({ message: error.message, color: 'danger' }) // Handle errors
+    }
   }
 }
 
