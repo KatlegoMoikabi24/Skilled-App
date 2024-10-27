@@ -61,16 +61,43 @@
     </VaValue>
 
     <div class="flex justify-center mt-4">
-      <VaButton class="w-full" @click="submit"> Create account</VaButton>
+      <VaButton class="w-full" @click="submit">Continue</VaButton>
     </div>
+
+    <VaModal v-model="showRoleModal" title="Select Your Role" @close="showRoleModal = false">
+      <div>
+        <p>Please select your role:</p>
+        <div>
+          <label>
+            <input type="radio" value="Client" v-model="selectedRole" />
+            Client
+          </label>
+          <label>
+            <input type="radio" value="Student" v-model="selectedRole" />
+            Student
+          </label>
+          <label>
+            <input type="radio" value="Mentor" v-model="selectedRole" />
+            Mentor
+          </label>
+          <label>
+            <input type="radio" value="Recruiter/Business" v-model="selectedRole" />
+            Recruiter/Business
+          </label>
+        </div>
+        <div class="flex justify-end mt-4">
+          <VaButton @click="confirmRole">Confirm</VaButton>
+        </div>
+      </div>
+    </VaModal>
   </VaForm>
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useForm, useToast } from 'vuestic-ui'
-import { auth } from '../../firebase' // Adjust the path as necessary
+import { auth } from '../../firebase'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { getFirestore, doc, setDoc } from 'firebase/firestore'
 
@@ -79,35 +106,43 @@ const { push } = useRouter()
 const { init } = useToast()
 
 const formData = reactive({
-  name: '', // Added field for user name
+  name: '',
   email: '',
   password: '',
   repeatPassword: '',
 })
 
+const showRoleModal = ref(false)
+const selectedRole = ref('')
+
 const submit = async () => {
   if (validate()) {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
-      const user = userCredential.user
-      const db = getFirestore()
+    showRoleModal.value = true
+  }
+}
 
-      // Create a document for the user with their UID
-      const userDocRef = doc(db, 'Users', user.uid) // Ensure 'Users' matches your collection name
-      await setDoc(userDocRef, {
-        name: formData.name, // Storing additional user data
-        email: formData.email,
-        createdAt: new Date(),
-      })
+const confirmRole = async () => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password)
+    const user = userCredential.user
+    const db = getFirestore()
 
+    const userDocRef = doc(db, 'Users', user.uid)
+    await setDoc(userDocRef, {
+      name: formData.name,
+      email: formData.email,
+      createdAt: new Date(),
+      role: selectedRole.value
+    })
 
-      localStorage.setItem('guid', user.uid)
+    localStorage.setItem('guid', user.uid)
 
-      init({ message: "You've successfully signed up", color: 'success' })
-      push({ name: 'dashboard' })
-    } catch (error) {
-      init({ message: error.message, color: 'danger' }) // Handle errors
-    }
+    init({ message: "You've successfully signed up", color: 'success' })
+
+    showRoleModal.value = false
+    await push({ name: 'dashboard' })
+  } catch (error) {
+    init({ message: error.message, color: 'danger' })
   }
 }
 
