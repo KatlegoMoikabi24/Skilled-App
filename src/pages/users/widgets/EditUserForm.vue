@@ -33,7 +33,7 @@ const newUser = ref<User>({ ...defaultNewUser })
 
 const isFormHasUnsavedChanges = computed(() => {
   return Object.keys(newUser.value).some((key) => {
-    if (key === 'avatar' || key === 'projects') {
+    if (key === 'projects') {
       return false
     }
 
