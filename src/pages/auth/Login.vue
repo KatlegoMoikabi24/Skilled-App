@@ -6,26 +6,26 @@
       <RouterLink :to="{ name: 'signup' }" class="font-semibold text-primary">Sign up</RouterLink>
     </p>
     <VaInput
-      v-model="formData.email"
-      :rules="[validators.required, validators.email]"
-      class="mb-4"
-      label="Email"
-      type="email"
+        v-model="formData.email"
+        :rules="[validators.required, validators.email]"
+        class="mb-4"
+        label="Email"
+        type="email"
     />
     <VaValue v-slot="isPasswordVisible" :default-value="false">
       <VaInput
-        v-model="formData.password"
-        :rules="[validators.required]"
-        :type="isPasswordVisible.value ? 'text' : 'password'"
-        class="mb-4"
-        label="Password"
-        @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
+          v-model="formData.password"
+          :rules="[validators.required]"
+          :type="isPasswordVisible.value ? 'text' : 'password'"
+          class="mb-4"
+          label="Password"
+          @clickAppendInner.stop="isPasswordVisible.value = !isPasswordVisible.value"
       >
         <template #appendInner>
           <VaIcon
-            :name="isPasswordVisible.value ? 'mso-visibility_off' : 'mso-visibility'"
-            class="cursor-pointer"
-            color="secondary"
+              :name="isPasswordVisible.value ? 'mso-visibility_off' : 'mso-visibility'"
+              class="cursor-pointer"
+              color="secondary"
           />
         </template>
       </VaInput>
@@ -47,8 +47,11 @@
 <script lang="ts" setup>
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import {useForm, useToast, VaImage} from 'vuestic-ui'
+import { useForm, useToast } from 'vuestic-ui'
 import { validators } from '../../services/utils'
+import { auth } from '../../firebase'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { getFirestore, doc, getDoc } from 'firebase/firestore'
 
 const { validate } = useForm('form')
 const { push } = useRouter()
@@ -60,10 +63,28 @@ const formData = reactive({
   keepLoggedIn: false,
 })
 
-const submit = () => {
+const submit = async () => {
   if (validate()) {
-    init({ message: "You've successfully logged in", color: 'success' })
-    push({ name: 'dashboard' })
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password)
+      const user = userCredential.user
+      const db = getFirestore()
+
+      // Fetch the user's document from Firestore
+      const userDocRef = doc(db, 'Users', user.uid) // Ensure 'Users' matches your collection name
+      const userDoc = await getDoc(userDocRef)
+
+      if (userDoc.exists()) {
+        // Store the document ID (user UID) in localStorage
+        localStorage.setItem('userDocID', user.uid)
+        init({ message: "You've successfully logged in", color: 'success' })
+        await push({ name: 'dashboard' })
+      } else {
+        init({ message: 'User document not found', color: 'danger' })
+      }
+    } catch (error) {
+      init({ message: error.message, color: 'danger' })
+    }
   }
 }
 </script>

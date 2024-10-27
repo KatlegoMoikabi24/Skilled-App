@@ -60,6 +60,34 @@ const required = (v: string | SelectOption) => !!v || 'This field is required'
 
 const { users: teamUsers, filters: teamFilters } = useUsers({ pagination: ref({ page: 1, perPage: 100, total: 10 }) })
 const { users: ownerUsers, filters: ownerFilters } = useUsers({ pagination: ref({ page: 1, perPage: 100, total: 10 }) })
+const industries = ref([
+  { id: 1, fullname: 'Agriculture' },
+  { id: 2, fullname: 'Mining and Minerals' },
+  { id: 3, fullname: 'Manufacturing' },
+  { id: 4, fullname: 'Construction' },
+  { id: 5, fullname: 'Wholesale and Retail Trade' },
+  { id: 6, fullname: 'Transport and Logistics' },
+  { id: 7, fullname: 'Financial Services' },
+  { id: 8, fullname: 'Tourism and Hospitality' },
+  { id: 9, fullname: 'Information Technology' },
+  { id: 10, fullname: 'Telecommunications' },
+  { id: 11, fullname: 'Energy and Utilities' },
+  { id: 12, fullname: 'Healthcare and Pharmaceuticals' },
+  { id: 13, fullname: 'Real Estate and Property Management' },
+  { id: 14, fullname: 'Professional Services' },
+  { id: 15, fullname: 'Media and Advertising' },
+  { id: 16, fullname: 'Education and Training' },
+  { id: 17, fullname: 'Government and Public Sector' },
+  { id: 18, fullname: 'Environmental Services' },
+  { id: 19, fullname: 'Retail Banking' },
+  { id: 20, fullname: 'Automotive' },
+  { id: 21, fullname: 'Food and Beverage' },
+  { id: 22, fullname: 'Textiles and Apparel' },
+  { id: 23, fullname: 'Construction Materials' },
+  { id: 24, fullname: 'Biotechnology' },
+  { id: 25, fullname: 'E-commerce' },
+]);
+
 </script>
 
 <template>
@@ -69,11 +97,11 @@ const { users: ownerUsers, filters: ownerFilters } = useUsers({ pagination: ref(
       v-model="newProject.project_owner"
       v-model:search="ownerFilters.search"
       searchable
-      label="Owner"
+      label="Industry"
       text-by="fullname"
       track-by="id"
       :rules="[required]"
-      :options="ownerUsers"
+      :options="industries"
     >
       <template #content="{ value: user }">
         <div v-if="user" :key="user.id" class="flex items-center gap-1 mr-4">
@@ -82,29 +110,10 @@ const { users: ownerUsers, filters: ownerFilters } = useUsers({ pagination: ref(
         </div>
       </template>
     </VaSelect>
-    <VaSelect
-      v-model="newProject.team"
-      v-model:search="teamFilters.search"
-      label="Team"
-      text-by="fullname"
-      track-by="id"
-      multiple
-      :rules="[(v: any) => ('length' in v && v.length > 0) || 'This field is required']"
-      :options="teamUsers"
-      :max-visible-options="$vaBreakpoint.mdUp ? 3 : 1"
-    >
-      <template #content="{ valueArray }">
-        <template v-if="valueArray">
-          <div v-for="(user, index) in valueArray" :key="user.id" class="flex items-center gap-1 mr-2">
-            <UserAvatar :user="user" size="18px" />
-            {{ user.fullname }}{{ index < valueArray.length - 1 ? ',' : '' }}
-          </div>
-        </template>
-      </template>
-    </VaSelect>
+    <VaInput v-model="newProject.project_name" label="Description/Project Scope" :rules="[required]" />
     <VaSelect
       v-model="newProject.status"
-      label="Status"
+      label="Attachments"
       :rules="[required]"
       track-by="value"
       value-by="value"
