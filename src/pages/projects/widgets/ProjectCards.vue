@@ -3,7 +3,7 @@ import {onMounted, PropType, ref} from 'vue'
 import { Project } from '../types'
 import ProjectStatusBadge from '../components/ProjectStatusBadge.vue'
 import { db } from '../../../firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 
 defineProps({
   projects: {
@@ -50,6 +50,54 @@ const avatarColor = (userName: string) => {
   const index = userName.charCodeAt(0) % colors.length
   return colors[index]
 }
+
+const joinProject = async (project: Project) => {
+  const guid = localStorage.getItem('guid');
+  if (guid) {
+    const projectRef = doc(db, 'projects', project.id);
+    await updateDoc(projectRef, {
+      team: arrayUnion(guid)
+    });
+   alert(`Successfully Joined ${project.project_name} Project, Good Luck`);
+   location.reload();
+  } else {
+    console.error('No GUID found in localStorage!');
+  }
+}
+
+const leaveProject = async (project: Project) => {
+
+  const hasUnsavedChanges = true;
+  if (hasUnsavedChanges) {
+    const agreed = confirm({
+      maxWidth: '380px',
+      message: 'Form has unsaved changes. Are you sure you want to close it?',
+      size: 'small',
+    });
+
+    if (!agreed) {
+      return;
+    }
+  }
+
+  if (localStorage.getItem('guid')) {
+    const projectRef = doc(db, 'projects', project.id);
+    await updateDoc(projectRef, {
+      team: arrayRemove(localStorage.getItem('guid'))
+    });
+   alert(`You Successfully left ${project.project_name} project`);
+   location.reload();
+  } else {
+    console.error('No GUID found in localStorage!');
+  }
+}
+
+
+const isUserInProjectTeam = (project: Project) => {
+  const userGuid = localStorage.getItem('guid');
+  return Array.isArray(project.team) && userGuid ? project.team.includes(userGuid) : false;
+}
+
 </script>
 
 <template>
@@ -82,23 +130,48 @@ const avatarColor = (userName: string) => {
           <p><b>Prize:</b> R {{ project.prize }} </p>
           <p><b>Project Owner:</b> {{ project.project_owner }}</p>
           <p><b>Description:</b> {{ project.description }} </p>
-          <p><b>Project Scope:</b>
-            <VaIcon
-                icon="mso-file-pdf"
-                aria-label="PDF file icon"
-            />
-          </p>
+          <p><b>Participants/Teams:</b> {{ project.team.length }} </p>
+          <br>
+
+          <a href="#" style="color: blue; float: right"><u> Download Project Scope</u></a>
+
         </div>
 
         <VaDivider class="my-6" />
         <div class="flex ju">
+          <Button
+              class="default"
+              v-if="role === 'Student' && isUserInProjectTeam(project)"
+              style="background-color: red; width: 115px; font-weight: bold; height: 35px; color: white; border-radius: 5px;"
+              @click="leaveProject(project)"
+          >
+            Leave Project
+          </Button>
 
-          <VaButton v-if="role === 'Student'" icon="" @click="createNewProject">Join Project</VaButton>
+          <VaButton
+              v-else-if="role === 'Student'"
+              @click="joinProject(project)"
+          >
+            Join Project
+          </VaButton>
 
-          <VaButton v-if="role === 'Client'" preset="secondary" icon="mso-edit" color="secondary" @click="$emit('edit', project)" />
-          <VaButton v-if="role === 'Client'" preset="secondary" icon="mso-delete" color="danger" @click="$emit('delete', project)" />
+          <VaButton
+              v-if="role === 'Client'"
+              preset="secondary"
+              icon="mso-edit"
+              color="secondary"
+              @click="$emit('edit', project)"
+          />
 
+          <VaButton
+              v-if="role === 'Client'"
+              preset="secondary"
+              icon="mso-delete"
+              color="danger"
+              @click="$emit('delete', project)"
+          />
         </div>
+
       </VaCardContent>
     </VaCard>
   </VaInnerLoading>

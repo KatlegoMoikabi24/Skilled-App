@@ -53,42 +53,34 @@ export default {
         },
       ],
     },
+    {
+      name: 'auth',
+      displayName: 'Project Submissions',
+      meta: {
+        icon: 'star',
+      },
+      children: [
+        {
+          name: 'login',
+          displayName: 'Awards',
+        },
+        {
+          name: 'signup',
+          displayName: 'Presentations',
+        },
+        {
+          name: 'recover-password',
+          displayName: 'Winners',
+        },
+      ],
+    },
     // {
-    //   name: 'auth',
-    //   displayName: 'menu.auth',
+    //   name: '404',
+    //   displayName: 'menu.404',
     //   meta: {
-    //     icon: 'login',
+    //     icon: 'vuestic-iconset-files',
     //   },
-    //   children: [
-    //     {
-    //       name: 'login',
-    //       displayName: 'menu.login',
-    //     },
-    //     {
-    //       name: 'signup',
-    //       displayName: 'menu.signup',
-    //     },
-    //     {
-    //       name: 'recover-password',
-    //       displayName: 'menu.recover-password',
-    //     },
-    //   ],
     // },
-
-    {
-      name: 'faq',
-      displayName: 'menu.faq',
-      meta: {
-        icon: 'quiz',
-      },
-    },
-    {
-      name: '404',
-      displayName: 'menu.404',
-      meta: {
-        icon: 'vuestic-iconset-files',
-      },
-    },
     {
       name: 'preferences',
       displayName: 'menu.preferences',
@@ -98,9 +90,16 @@ export default {
     },
     {
       name: 'settings',
-      displayName: 'menu.settings',
+      displayName: 'System Settings',
       meta: {
         icon: 'settings',
+      },
+    },
+    {
+      name: 'faq',
+      displayName: 'menu.faq',
+      meta: {
+        icon: 'quiz',
       },
     },
   ] as INavigationRoute[],
