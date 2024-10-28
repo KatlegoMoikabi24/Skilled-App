@@ -194,32 +194,6 @@ const submitMentorship = async () => {
 };
 
 
-const submitMentorship = async () => {
-  if (description.value) {
-    const newRequest = {
-      projectId: projectId.value,
-      projectIndustry: projectIndustry.value,
-      description: description.value,
-      from: localStorage.getItem('guid'),
-      comments: []
-    };
-
-    try {
-      const requestsCollection = collection(db, 'requests');
-      await addDoc(requestsCollection, newRequest);
-
-      alert(`Requested mentorship for ${projectName.value} with description: ${description.value}`);
-    } catch (error) {
-      console.error("Error adding document: ", error);
-      alert("There was an error submitting your request. Please try again.");
-    }
-
-  } else {
-    alert("Please enter a description before submitting.");
-  }
-  showMentorModal.value = false;
-};
-
 const isUserInProjectTeam = (project: Project) => {
   const userGuid = localStorage.getItem('guid');
   return Array.isArray(project.team) && userGuid ? project.team.includes(userGuid) : false;
