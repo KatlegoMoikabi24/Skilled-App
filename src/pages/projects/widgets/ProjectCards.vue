@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { PropType } from 'vue'
+import {onMounted, PropType, ref} from 'vue'
 import { Project } from '../types'
 import ProjectStatusBadge from '../components/ProjectStatusBadge.vue'
+import { db } from '../../../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 defineProps({
   projects: {
@@ -19,6 +21,30 @@ defineEmits<{
   (event: 'delete', project: Project): void
 }>()
 
+const role = ref<string | null>(null);
+
+const fetchUserRole = async () => {
+  const guid = localStorage.getItem('guid');
+  if (guid) {
+    const userRef = doc(db, 'users', guid);
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      role.value = userData.role;
+
+      console.log(role.value);
+    } else {
+      console.error('No such user found!');
+    }
+  } else {
+    console.error('No GUID found in localStorage!');
+  }
+}
+
+onMounted(() => {
+  fetchUserRole();
+});
 const avatarColor = (userName: string) => {
   const colors = ['primary', '#FFD43A', '#ADFF00', '#262824', 'danger']
   const index = userName.charCodeAt(0) % colors.length
@@ -56,7 +82,7 @@ const avatarColor = (userName: string) => {
           <p><b>Prize:</b> R {{ project.prize }} </p>
           <p><b>Project Owner:</b> {{ project.project_owner }}</p>
           <p><b>Description:</b> {{ project.description }} </p>
-          <p><b>Files/Attachments:</b>
+          <p><b>Project Scope:</b>
             <VaIcon
                 icon="mso-file-pdf"
                 aria-label="PDF file icon"
@@ -67,10 +93,10 @@ const avatarColor = (userName: string) => {
         <VaDivider class="my-6" />
         <div class="flex ju">
 
-          <VaButton icon="" @click="createNewProject">Join Project</VaButton>
+          <VaButton v-if="role === 'Student'" icon="" @click="createNewProject">Join Project</VaButton>
 
-          <VaButton preset="secondary" icon="mso-edit" color="secondary" @click="$emit('edit', project)" />
-          <VaButton preset="secondary" icon="mso-delete" color="danger" @click="$emit('delete', project)" />
+          <VaButton v-if="role === 'Client'" preset="secondary" icon="mso-edit" color="secondary" @click="$emit('edit', project)" />
+          <VaButton v-if="role === 'Client'" preset="secondary" icon="mso-delete" color="danger" @click="$emit('delete', project)" />
 
         </div>
       </VaCardContent>

@@ -39,10 +39,29 @@ export const getProjects = async (options: Sorting & Pagination) => {
 
   const projects = querySnapshot.docs.map((doc) => {
     const project = { id: doc.id, ...doc.data() };
+
+    let formattedEndDate;
+
+    if (project.endDate && project.endDate.toDate) {
+      formattedEndDate = project.endDate.toDate().toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    } else if (project.endDate instanceof Date) {
+      formattedEndDate = project.endDate.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    } else {
+      formattedEndDate = null;
+    }
+
+
     return {
       ...project,
-      endDate: project.endDate ? project.endDate.toDate().toLocaleDateString('en-US',
-          { month: 'short', day: 'numeric', year: 'numeric' }) : null,
+      endDate: formattedEndDate
     };
   });
 

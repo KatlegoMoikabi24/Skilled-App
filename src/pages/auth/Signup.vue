@@ -12,7 +12,7 @@
         v-model="formData.name"
         :rules="[(v) => !!v || 'Name field is required']"
         class="mb-4"
-        label="Name"
+        label="Full Names"
     />
 
     <VaInput
@@ -66,29 +66,43 @@
       <VaButton class="w-full" @click="submit">Continue</VaButton>
     </div>
 
-    <VaModal v-model="showRoleModal" title="Select Your Role" @close="showRoleModal = false">
+    <VaModal v-model="showRoleModal" title="Select Your Role &amp; Industry" @close="showRoleModal = false">
       <div>
-        <p>Please select your role:</p>
-        <div>
+        <span style="font-size: 18px">Please select your role:</span>
+        <br>
+        <div class="mt-3">
           <label>
             <input type="radio" value="Client" v-model="selectedRole" />
             Client
-          </label>
+          </label> <br>
           <label>
             <input type="radio" value="Student" v-model="selectedRole" />
             Student
-          </label>
+          </label> <br>
           <label>
             <input type="radio" value="Mentor" v-model="selectedRole" />
             Mentor
-          </label>
+          </label><br>
           <label>
             <input type="radio" value="Recruiter/Business" v-model="selectedRole" />
             Recruiter/Business
           </label>
+          <hr>
+          <br>
+          <span class="mt-5" style="font-size: 16px">Select your Industry:</span>
+
+          <br>
+
+          <VaSelect
+              searchable
+              label="Industry"
+              :rules="[required]"
+              :options="industries.map(industry => ({ text: industry, value: industry }))"
+              v-model="selectedIndustry"
+          />
         </div>
         <div class="flex justify-end mt-4">
-          <VaButton @click="confirmRole">Confirm</VaButton>
+          <VaButton @click="confirmRole" :disabled="!selectedIndustry || !selectedRole">Confirm</VaButton>
         </div>
       </div>
     </VaModal>
@@ -124,6 +138,7 @@ const formData = reactive({
 
 const showRoleModal = ref(false)
 const selectedRole = ref('')
+const selectedIndustry = ref('')
 
 const submit = async () => {
   if (validate()) {
@@ -137,12 +152,13 @@ const confirmRole = async () => {
     const user = userCredential.user
     const db = getFirestore()
 
-    const userDocRef = doc(db, 'Users', user.uid)
+    const userDocRef = doc(db, 'users', user.uid)
     await setDoc(userDocRef, {
       name: formData.name,
       email: formData.email,
       createdAt: new Date(),
-      role: selectedRole.value
+      role: selectedRole.value,
+      industry: selectedIndustry.value
     })
 
     localStorage.setItem('guid', user.uid)
@@ -156,7 +172,33 @@ const confirmRole = async () => {
   }
 }
 
-
+const industries = ref([
+  'Agriculture',
+  'Mining and Minerals',
+  'Manufacturing',
+  'Construction',
+  'Wholesale and Retail Trade',
+  'Transport and Logistics',
+  'Financial Services',
+  'Tourism and Hospitality',
+  'Information Technology',
+  'Telecommunications',
+  'Energy and Utilities',
+  'Healthcare and Pharmaceuticals',
+  'Real Estate and Property Management',
+  'Professional Services',
+  'Media and Advertising',
+  'Education and Training',
+  'Government and Public Sector',
+  'Environmental Services',
+  'Retail Banking',
+  'Automotive',
+  'Food and Beverage',
+  'Textiles and Apparel',
+  'Construction Materials',
+  'Biotechnology',
+  'E-commerce',
+]);
 
 const passwordRules: ((v: string) => boolean | string)[] = [
   (v) => !!v || 'Password field is required',

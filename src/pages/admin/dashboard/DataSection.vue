@@ -39,11 +39,11 @@ const { getColor } = useColors()
 
 let projects = ref(0);
 let recruiters = ref(0);
-let mentors = ref(0);
+let clients = ref(0);
 let students = ref(0);
 
 const fetchMetrics = async () => {
-  const usersSnapshot = await getDocs(collection(db, 'Users'));
+  const usersSnapshot = await getDocs(collection(db, 'users'));
   const projectsSnapshot = await getDocs(collection(db, 'projects'));
 
   projects.value = projectsSnapshot.size;
@@ -51,12 +51,12 @@ const fetchMetrics = async () => {
   usersSnapshot.forEach((doc) => {
     const userData = doc.data();
     console.log(userData.role);
-    if (userData.role === 'mentor') {
-      mentors.value++;
-    } else if (userData.role === 'Recruiter/Business') {
+    if (userData.role === 'Recruiter/Business') {
       recruiters.value++;
-    } else if (userData.role === 'student') {
+    } else if (userData.role == 'Student') {
       students.value++;
+    } else if (userData.role == 'Client') {
+      clients.value++;
     }
   });
 }
@@ -97,8 +97,8 @@ const dashboardMetrics = computed<DashboardMetric[]>(() => [
   },
   {
     id: 'mentors',
-    title: 'Mentors',
-    value: mentors,
+    title: 'Clients',
+    value: clients,
     icon: 'mso-account_circle',
     changeText: '2.5%',
     changeDirection: 'up',
