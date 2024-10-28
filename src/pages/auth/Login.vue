@@ -70,13 +70,12 @@ const submit = async () => {
       const user = userCredential.user
       const db = getFirestore()
 
-      // Fetch the user's document from Firestore
-      const userDocRef = doc(db, 'Users', user.uid) // Ensure 'Users' matches your collection name
+      const userDocRef = doc(db, 'users', user.uid)
       const userDoc = await getDoc(userDocRef)
 
       if (userDoc.exists()) {
-        // Store the document ID (user UID) in localStorage
-        localStorage.setItem('userDocID', user.uid)
+
+        localStorage.setItem('guid', user.uid)
         init({ message: "You've successfully logged in", color: 'success' })
         await push({ name: 'dashboard' })
       } else {

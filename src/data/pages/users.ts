@@ -46,18 +46,23 @@ const getSortItem = (obj: any, sortBy: string) => {
 export const getUsers = async (filters: Partial<Filters & Pagination & Sorting>) => {
   await sleep(1000);
 
-  const userCollection = collection(db, 'Users');
+  const userCollection = collection(db, 'users');
 
   const querySnapshot = await getDocs(userCollection);
 
   const filteredUsers = querySnapshot.docs.map(doc => ({
     id: doc.id,
-    createdAt: doc.data().createdAt.toDate(),
+    date: doc.data().createdAt.toDate().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    }),
     email: doc.data().email,
     isActive: doc.data().isActive,
     name: doc.data().name,
     role: doc.data().role,
     projects: [],
+    industry: doc.data().industry.text,
   }));
 
   return {

@@ -1,21 +1,20 @@
 <script lang="ts" setup>
-import RevenueUpdates from './cards/RevenueReport.vue'
 import ProjectTable from './cards/ProjectTable.vue'
 import RevenueByLocationMap from './cards/RevenueByLocationMap.vue'
 import DataSection from './DataSection.vue'
-import YearlyBreakup from './cards/YearlyBreakup.vue'
-import MonthlyEarnings from './cards/MonthlyEarnings.vue'
 import RegionRevenue from './cards/RegionRevenue.vue'
 import Timeline from './cards/Timeline.vue'
 
 import { onMounted } from "vue";
+import { useToast } from 'vuestic-ui'
 
-onMounted(() => {
+const { init } = useToast()
+onMounted(async () => {
   const guid = localStorage.getItem('guid');
-  console.log(guid);
-
   if(!guid){
-    // window.location.replace('/auth/login');
+    window.location.replace('/auth/login');
+  } else {
+    console.log('user Exists')
   }
 })
 </script>

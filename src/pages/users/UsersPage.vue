@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import {onMounted, ref} from 'vue'
 import UsersTable from './widgets/UsersTable.vue'
 import EditUserForm from './widgets/EditUserForm.vue'
 import { User } from './types'
 import { useUsers } from './composables/useUsers'
 import { useModal, useToast } from 'vuestic-ui'
+import {doc, getDoc} from "firebase/firestore";
+import {db} from "../../firebase";
 
 const doShowEditUserModal = ref(false)
 
@@ -66,6 +68,29 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
     hide()
   }
 }
+const role = ref<string | null>(null);
+const fetchUserRole = async () => {
+  const guid = localStorage.getItem('guid');
+  if (guid) {
+    const userRef = doc(db, 'users', guid);
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      role.value = userData.role;
+
+      console.log(role.value);
+    } else {
+      console.error('No such user found!');
+    }
+  } else {
+    console.error('No GUID found in localStorage!');
+  }
+}
+
+onMounted(() => {
+  fetchUserRole();
+});
 </script>
 
 <template>
@@ -90,7 +115,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
             </template>
           </VaInput>
         </div>
-        <VaButton @click="showAddUserModal">Add User</VaButton>
+        <VaButton @click="showAddUserModal" v-if="role === 'Admin'" >Add User</VaButton>
       </div>
 
       <UsersTable

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import {onMounted, ref} from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 import { useProjects } from './composables/useProjects'
 import ProjectCards from './widgets/ProjectCards.vue'
@@ -7,8 +7,33 @@ import ProjectTable from './widgets/ProjectsTable.vue'
 import EditProjectForm from './widgets/EditProjectForm.vue'
 import { Project } from './types'
 import { useModal, useToast } from 'vuestic-ui'
+import { db } from '../../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 const doShowAsCards = useLocalStorage('projects-view', true)
+const role = ref<string | null>(null);
+const fetchUserRole = async () => {
+  const guid = localStorage.getItem('guid');
+  if (guid) {
+    const userRef = doc(db, 'users', guid);
+    const userDoc = await getDoc(userRef);
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      role.value = userData.role;
+
+      console.log(role.value);
+    } else {
+      console.error('No such user found!');
+    }
+  } else {
+    console.error('No GUID found in localStorage!');
+  }
+}
+
+onMounted(() => {
+  fetchUserRole();
+});
 
 const { projects, update, add, isLoading, remove, pagination, sorting } = useProjects()
 
@@ -101,7 +126,7 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
             ]"
           />
         </div>
-        <VaButton icon="add" @click="createNewProject">Project</VaButton>
+        <VaButton v-if="role === 'Client'" icon="add" @click="createNewProject">Project</VaButton>
       </div>
 
       <ProjectCards
