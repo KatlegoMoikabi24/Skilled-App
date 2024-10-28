@@ -126,7 +126,12 @@ const beforeEditFormModalClose = async (hide: () => unknown) => {
             ]"
           />
         </div>
-        <VaButton v-if="role === 'Client'" icon="add" @click="createNewProject">Project</VaButton>
+
+        <div>
+          <VaButton v-if="role === 'Client' || role === 'Student'" @click="createNewProject">My Projects</VaButton>
+          <VaButton style="margin-left: 5px;" v-if="role === 'Client'" icon="add" @click="createNewProject">Project</VaButton>
+        </div>
+
       </div>
 
       <ProjectCards
