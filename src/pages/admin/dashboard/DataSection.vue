@@ -18,9 +18,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
-import { useColors } from 'vuestic-ui'
+import {computed, onMounted, ref} from 'vue'
+import {useColors} from 'vuestic-ui'
 import DataSectionItem from './DataSectionItem.vue'
+import {db} from "../../../firebase";
+import {collection, getDocs} from "firebase/firestore";
 
 interface DashboardMetric {
   id: string
@@ -35,11 +37,38 @@ interface DashboardMetric {
 
 const { getColor } = useColors()
 
+let projects = ref(0);
+let recruiters = ref(0);
+let mentors = ref(0);
+let students = ref(0);
+
+const fetchMetrics = async () => {
+  const usersSnapshot = await getDocs(collection(db, 'Users'));
+  const projectsSnapshot = await getDocs(collection(db, 'projects'));
+
+  projects.value = projectsSnapshot.size;
+
+  usersSnapshot.forEach((doc) => {
+    const userData = doc.data();
+    console.log(userData.role);
+    if (userData.role === 'mentor') {
+      mentors.value++;
+    } else if (userData.role === 'Recruiter/Business') {
+      recruiters.value++;
+    } else if (userData.role === 'student') {
+      students.value++;
+    }
+  });
+}
+onMounted(() => {
+  fetchMetrics();
+});
+
 const dashboardMetrics = computed<DashboardMetric[]>(() => [
   {
     id: 'ongoingProjects',
     title: 'Skill-led Projects',
-    value: '15',
+    value: projects,
     icon: 'mso-folder_open',
     changeText: '25.36%',
     changeDirection: 'up',
@@ -49,7 +78,7 @@ const dashboardMetrics = computed<DashboardMetric[]>(() => [
   {
     id: 'openInvoices',
     title: 'Students',
-    value: '3548',
+    value: students,
     icon: 'mso-account_circle',
     changeText: '25.36%',
     changeDirection: 'down',
@@ -59,7 +88,7 @@ const dashboardMetrics = computed<DashboardMetric[]>(() => [
   {
     id: 'recruiters',
     title: 'Recruiters',
-    value: '25',
+    value: recruiters,
     icon: 'mso-account_circle',
     changeText: '2.5%',
     changeDirection: 'up',
@@ -69,7 +98,7 @@ const dashboardMetrics = computed<DashboardMetric[]>(() => [
   {
     id: 'mentors',
     title: 'Mentors',
-    value: '158',
+    value: mentors,
     icon: 'mso-account_circle',
     changeText: '2.5%',
     changeDirection: 'up',
