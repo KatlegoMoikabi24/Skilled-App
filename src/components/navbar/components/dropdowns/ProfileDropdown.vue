@@ -4,9 +4,17 @@
       <template #anchor>
         <VaButton preset="secondary" color="textPrimary">
           <span class="profile-dropdown__anchor min-w-max">
+
             <slot />
-            <VaAvatar class="mr-6">KM</VaAvatar>        
-            </span>
+
+            <VaButton class="mr-6 mb-1 flex items-center">
+              <VaIcon name="mso-account_circle" size="large" class="mr-2" />
+              <span>{{ store.userName }}</span>
+            </VaButton>
+
+             <span style="color: #dd1818; font-weight: bold; font-size: 19px !important;"> {{ store.role }} </span>
+
+          </span>
         </VaButton>
       </template>
       <VaDropdownContent
@@ -34,9 +42,17 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useColors } from 'vuestic-ui'
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useColors } from 'vuestic-ui';
+import { useUserStore} from "../../../../stores/user-store";
+import {onMounted} from "vue";
+
+const store = useUserStore();
+
+onMounted(() => {
+  store.fetchUser();
+});
 
 const { colors, setHSLAColor } = useColors()
 const hoverColor = computed(() => setHSLAColor(colors.focus, { a: 0.1 }))
