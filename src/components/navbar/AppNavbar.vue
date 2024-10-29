@@ -14,7 +14,8 @@
         <RouterLink to="/" aria-label="Visit home page">
         </RouterLink>
 
-        <img src="logo.png" alt="Skilled App" width="130px" height="80px" />
+        <img src="../logo.png" alt="Skilled App" width="130px" height="80px" />
+
       </div>
     </template>
     <template #right>
@@ -27,8 +28,6 @@
 import { storeToRefs } from 'pinia'
 import { useGlobalStore } from '../../stores/global-store'
 import AppNavbarActions from './components/AppNavbarActions.vue'
-import VuesticLogo from '../VuesticLogo.vue'
-import {VaImage} from "vuestic-ui";
 
 defineProps({
   isMobile: { type: Boolean, default: false },
