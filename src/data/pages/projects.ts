@@ -2,7 +2,7 @@ import { sleep } from '../../services/utils'
 import projectsDb from './projects-db.json'
 import usersDb from './users-db.json'
 import { db } from '../../firebase';
-import {collection, doc, getDocs, setDoc, addDoc } from 'firebase/firestore';
+import {collection, doc, getDocs, setDoc, addDoc, getDoc, query, where} from 'firebase/firestore';
 
 export type Pagination = {
   page: number
@@ -34,12 +34,50 @@ const getSortItem = (obj: any, sortBy: keyof (typeof projectsDb)[number]) => {
 export const getProjects = async (options: Sorting & Pagination) => {
   await sleep(1000);
 
-  const projectsRef = collection(db, 'projects');
-  const querySnapshot = await getDocs(projectsRef);
+  const guid = localStorage.getItem('guid');
+  if (!guid) {
+    console.error('No GUID found in localStorage');
+    return { data: [], pagination: { page: options.page, perPage: options.perPage, total: 0 } };
+  }
 
-  const projects = querySnapshot.docs.map((doc) => {
-    const project = { id: doc.id, ...doc.data() };
+  const usersRef = collection(db, 'users');
 
+
+  const userDocRef = doc(usersRef, guid);
+  const userDocSnapshot = await getDoc(userDocRef);
+
+  if (!userDocSnapshot.exists()) {
+    console.error(`No user found for GUID: ${guid}`);
+    return { data: [], pagination: { page: options.page, perPage: options.perPage, total: 0 } };
+  }
+
+  const userData = userDocSnapshot.data();
+
+  let projects = [];
+
+  if (userData.role === 'Mentor') {
+
+    const projectsRef = collection(db, 'projects');
+    const projectsQuery = query(
+        projectsRef,
+        where('industry.text', '==', userData.industry.text)
+    );
+
+    const querySnapshot = await getDocs(projectsQuery);
+    projects = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } else {
+    const projectsRef = collection(db, 'projects');
+    const querySnapshot = await getDocs(projectsRef);
+    projects = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  }
+
+  projects = projects.map((project) => {
     let formattedEndDate;
 
     if (project.endDate && project.endDate.toDate) {
@@ -57,7 +95,6 @@ export const getProjects = async (options: Sorting & Pagination) => {
     } else {
       formattedEndDate = null;
     }
-
 
     return {
       ...project,
@@ -91,6 +128,7 @@ export const getProjects = async (options: Sorting & Pagination) => {
     },
   };
 };
+
 export const addProject = async (project: Omit<(typeof projectsDb)[number], 'id' | 'creation_date'>) => {
   await sleep(1000);
 
