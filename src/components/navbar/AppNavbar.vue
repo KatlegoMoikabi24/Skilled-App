@@ -13,8 +13,8 @@
         </Transition>
         <RouterLink to="/" aria-label="Visit home page">
         </RouterLink>
-        <h1>Skill-Led</h1>
 
+        <img src="logo.png" alt="Skilled App" width="130px" height="80px" />
       </div>
     </template>
     <template #right>

@@ -1,7 +1,8 @@
 <template>
   <VaForm ref="form" @submit.prevent="submit">
-    <h1 class="font-semibold text-4xl mb-4">Log in</h1>
-    <p class="text-base mb-4 leading-5">
+    <h1 style="text-align: center" class="font-semibold text-4xl mb-4"><b style="color: #063970">Skill</b><i>Led</i></h1>
+    <hr>
+    <p class="text-base mb-4 mt-5 leading-5">
       New to Skill-Led?
       <RouterLink :to="{ name: 'signup' }" class="font-semibold text-primary">Sign up</RouterLink>
     </p>
