@@ -2,7 +2,9 @@
 
 
   <VaForm ref="form" @submit.prevent="submit">
-    <h1 class="font-semibold text-4xl mb-4">Sign up</h1>
+    <h1 style="text-align: center" class="font-semibold text-4xl mb-4"><b style="color: #063970">Skill</b><i>Led</i></h1>
+    <hr>
+    <h3 class="font-semibold text-4xl mt-5 mb-4">Sign up</h3>
     <p class="text-base mb-4 leading-5">
       Have an account?
       <RouterLink :to="{ name: 'login' }" class="font-semibold text-primary">Login</RouterLink>
